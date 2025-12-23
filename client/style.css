@@ -1,0 +1,187 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(120deg, #e0f7fa, #e8f5e9);
+  color: #333;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+header {
+  background-color: #00897b;
+  padding: 20px;
+  color: white;
+}
+
+header h1 {
+  font-size: 2em;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn {
+  padding: 15px 30px;
+  background-color: #43a047;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #2e7d32;
+}
+
+footer {
+  background-color: #004d40;
+  color: #fff;
+  padding: 10px;
+}
+
+/* ✅ Upload Form */
+form#uploadForm {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  max-width: 500px;
+  width: 100%;
+  margin: 20px auto;
+}
+
+form#uploadForm label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+form#uploadForm input[type="file"] {
+  margin-top: 5px;
+}
+
+#status {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+#preview img {
+  margin: 10px 0;
+  max-width: 300px;
+  border-radius: 8px;
+}
+
+/* ✅ Recyclers */
+.recycler-list {
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  max-width: 700px;
+  margin: auto;
+}
+
+.card, .recycler-card {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+/* ✅ Dashboard */
+.dashboard {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+}
+
+.summary-box {
+  background-color: #c8e6c9;
+  padding: 20px;
+  border-radius: 12px;
+  width: 200px;
+  text-align: center;
+  border: 2px solid #4caf50;
+}
+
+.history {
+  padding: 20px;
+}
+
+table {
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid #888;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+}
+
+thead {
+  background-color: #a5d6a7;
+}
+
+/* ✅ History Grid (if used) */
+#history {
+  display: grid;
+  gap: 20px;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* ✅ User Section for Map page */
+.user-section {
+  background: #e8f5e9;
+  border: 2px solid #4caf50;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 800px;
+  padding: 15px;
+  text-align: left;
+}
+
+.user-section h3 {
+  margin-top: 0;
+  color: #2e7d32;
+}
+
+.upload-card {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 10px 0;
+  padding: 10px;
+}

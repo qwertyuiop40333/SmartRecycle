@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SmartRecycleX | Leaderboard</title>
+  <style>
+    :root {
+      --bg-color: #f1f8f4;
+      --text-color: #1b5e20;
+      --table-bg: #ffffff;
+      --header-bg: #c8e6c9;
+      --btn-bg: #4caf50;
+      --btn-hover: #388e3c;
+      --row-hover: rgba(76, 175, 80, 0.1);
+    }
+
+    body.dark-theme {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+      --table-bg: #1e1e1e;
+      --header-bg: #388e3c;
+      --btn-bg: #81c784;
+      --btn-hover: #66bb6a;
+      --row-hover: rgba(129, 199, 132, 0.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+      animation: fadeInDown 0.6s ease-in-out;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      background: var(--btn-bg);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .theme-toggle:hover {
+      background: var(--btn-hover);
+    }
+
+    table {
+      width: 90%;
+      max-width: 800px;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: var(--table-bg);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      animation: slideUp 0.7s ease-in-out;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #c8e6c9;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    th {
+      background-color: var(--header-bg);
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    tr:hover {
+      background-color: var(--row-hover);
+    }
+
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      table {
+        font-size: 14px;
+      }
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
+        padding: 8px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙 Enable Dark Mode</button>
+  <h1>🏆 Weekly Top 10 Green Performers</h1>
+
+  <table id="leaderboardTable">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Green Points</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const isDark = body.classList.toggle("dark-theme");
+      localStorage.setItem("theme", isDark ? "dark-theme" : "light");
+      document.querySelector(".theme-toggle").textContent = isDark ? "☀ Switch to Light Mode" : "🌙 Enable Dark Mode";
+    }
+
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark-theme") {
+        document.body.classList.add("dark-theme");
+        document.querySelector(".theme-toggle").textContent = "☀ Switch to Light Mode";
+      }
+      loadLeaderboard();
+    };
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch("http://localhost:3000/api/leaderboard-blockchain");
+        const data = await res.json();
+        const tbody = document.querySelector("#leaderboardTable tbody");
+
+        if (!data.success || !data.top || !data.top.length) {
+          tbody.innerHTML = "<tr><td colspan='3'>No data available</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = "";
+
+        data.top.forEach((user, i) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>#${i + 1}</td>
+            <td>${user.username || "Unknown"}</td>
+            <td>${user.total || 0}</td>
+          `;
+          row.style.animation = `fadeInDown 0.5s ease ${i * 0.1}s both`;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error("❌ Failed to load leaderboard:", err);
+      }
+    }
+  </script>
+</body>
+</html>

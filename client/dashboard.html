@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartRecycleX Dashboard</title>
+  <style>
+    :root {
+      --bg-color: #f1f8e9;
+      --text-color: #1b5e20;
+      --card-bg: #ffffff;
+      --user-bg: #e8f5e9;
+      --border-color: #66bb6a;
+      --header-bg: #a5d6a7;
+      --success-color: green;
+      --fail-color: red;
+    }
+
+    body.dark-mode {
+      --bg-color: #10281c;
+      --text-color: #ffffff;
+      --card-bg: #1e4620;
+      --user-bg: #2e7d32;
+      --border-color: #81c784;
+      --header-bg: #4caf50;
+      --success-color: #81c784;
+      --fail-color: #ef9a9a;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--header-bg);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 999;
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-color);
+    }
+
+    .user-section {
+      margin-bottom: 40px;
+      background: var(--user-bg);
+      padding: 18px;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      animation: fadeInUp 0.5s ease;
+    }
+
+    h2 {
+      color: var(--text-color);
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      animation: fadeIn 0.6s ease;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #c8e6c9;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    th {
+      background-color: var(--header-bg);
+    }
+
+    .passed {
+      color: var(--success-color);
+      font-weight: bold;
+    }
+
+    .failed {
+      color: var(--fail-color);
+      font-weight: bold;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      table {
+        font-size: 14px;
+      }
+      .theme-toggle {
+        font-size: 14px;
+        padding: 6px 12px;
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+  <h1>📊 SmartRecycleX Dashboard</h1>
+  <div id="leaderboardContainer">Loading leaderboard...</div>
+
+  <script>
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", isDark ? "dark-mode" : "light");
+      document.querySelector(".theme-toggle").textContent = isDark ? "☀ Light Mode" : "🌙 Dark Mode";
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem("theme");
+      if (saved === "dark-mode") {
+        document.body.classList.add("dark-mode");
+        document.querySelector(".theme-toggle").textContent = "☀ Light Mode";
+      }
+      loadLeaderboard();
+    };
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch("http://localhost:3000/api/all-waste");
+        const data = await res.json();
+
+        if (!data.success || !data.uploads.length) {
+          document.getElementById("leaderboardContainer").innerHTML = "<p>📭 No data available.</p>";
+          return;
+        }
+
+        const grouped = {};
+        for (const upload of data.uploads) {
+          const user = upload.username || "Unknown";
+          if (!grouped[user]) grouped[user] = [];
+          grouped[user].push(upload);
+        }
+
+        const container = document.getElementById("leaderboardContainer");
+        container.innerHTML = "";
+
+        for (const user in grouped) {
+          const section = document.createElement("div");
+          section.className = "user-section";
+
+          const header = document.createElement("h2");
+          header.textContent = `👤 ${user} (${grouped[user].length} uploads)`;
+          section.appendChild(header);
+
+          const table = document.createElement("table");
+          table.innerHTML = `
+            <tr>
+              <th>Waste Type</th>
+              <th>Confidence</th>
+              <th>Status</th>
+              <th>Points</th>
+            </tr>
+          `;
+
+          grouped[user].forEach(entry => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${entry.wasteType || "Unknown"}</td>
+              <td>${(entry.confidence * 100).toFixed(2)}%</td>
+              <td class="${entry.status === 'Passed' ? 'passed' : 'failed'}">${entry.status || "N/A"}</td>
+              <td>${entry.points || 0}</td>
+            `;
+            table.appendChild(tr);
+          });
+
+          section.appendChild(table);
+          container.appendChild(section);
+        }
+
+      } catch (err) {
+        console.error("❌ Failed to load leaderboard:", err);
+        document.getElementById("leaderboardContainer").innerHTML = "<p>❌ Error loading data.</p>";
+      }
+    }
+  </script>
+</body>
+</html>

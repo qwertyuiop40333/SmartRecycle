@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrashFourmers</title>
+  <link rel="icon" type="image/png" href="favvv.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --btn-bg: #43a047;
+      --btn-hover: #2e7d32;
+      --text-color: #212121;
+      --header-bg: linear-gradient(to right, #00796b, #004d40);
+      --footer-bg: #004d40;
+    }
+
+    body.dark-green {
+      --btn-bg: #81c784;
+      --btn-hover: #66bb6a;
+      --text-color: #ffffff;
+      --header-bg: linear-gradient(to right, #003d33, #002921);
+      --footer-bg: #002921;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: url("ibb.JPG") no-repeat center center/cover;
+      background-attachment: fixed;
+      color: var(--text-color);
+      transition: background 0.6s ease, color 0.4s ease;
+    }
+
+    header {
+      background: var(--header-bg);
+      color: #fff;
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      animation: fadeDown 1s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 20px;
+      backdrop-filter: brightness(0.95) blur(1.5px);
+      text-align: center; /* ensure horizontal center alignment */
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;   /* center the content horizontally */
+      gap: 20px;
+      width: 100%;
+      max-width: 350px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      animation: fadeUp 1s ease;
+      margin: 0 auto; /* center the box within its parent */
+    }
+
+    body.dark-green .button-container {
+      background: rgba(34, 51, 34, 0.85);
+    }
+
+    .btn {
+      background-color: var(--btn-bg);
+      color: white;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease, transform 0.3s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background-color: var(--btn-hover);
+      transform: translateY(-3px) scale(1.01);
+    }
+
+    footer {
+      background-color: var(--footer-bg);
+      color: #ccc;
+      text-align: center;
+      padding: 16px;
+      font-size: 0.9rem;
+      animation: fadeUp 1s ease;
+    }
+
+    @keyframes fadeUp {
+      0% { transform: translateY(30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeDown {
+      0% { transform: translateY(-30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 500px) {
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .btn {
+        font-size: 0.95rem;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>♻ TrashFourmers</h1>
+    <p>Empowering the circular economy with AI & Blockchain</p>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Green</button>
+  </header>
+
+  <main>
+    <div class="button-container">
+      <a href="upload.html" class="btn">📤 Upload Waste Image</a>
+      <a href="recyclers.html" class="btn">📍 Find Recyclers</a>
+      <a href="dashboard.html" class="btn">📊 My Dashboard</a>
+      <a href="result.html" class="btn">🏆 Weekly Leaderboard</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>Made by TrashFourmers ❤ | #CircularEconomy</p>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const isDark = body.classList.toggle("dark-green");
+      localStorage.setItem("theme", isDark ? "dark-green" : "light");
+      document.querySelector(".theme-toggle").textContent = isDark ? "☀ Light Mode" : "🌙 Dark Green";
+    }
+
+    window.onload = () => {
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark-green") {
+        document.body.classList.add("dark-green");
+        document.querySelector(".theme-toggle").textContent = "☀ Light Mode";
+      }
+    };
+  </script>
+</body>
+</html>
